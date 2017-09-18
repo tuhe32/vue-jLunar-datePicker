@@ -1,11 +1,23 @@
 {
   "name": "vue-jlunar-datepicker",
-  "version": "1.0.7",
+  "version": "1.0.10",
   "description": "农历日期组件",
   "author": "jinwen (hellsar@163.com)",
   "private": false,
   "main": "./src/components/JDatePicker.vue",
   "license": "MIT",
+  "homepage": "https://github.com/tuhe32/vue-jLunar-datePicker",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuhe32/vue-jLunar-datePicker"
+  },
+  "keywords": [
+    "vue-jLunar-datePicker",
+    "vue-jlunar-datepicker",
+    "lunar",
+    "datepicker",
+    "vue"
+  ],
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",

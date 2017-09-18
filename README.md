@@ -4,7 +4,7 @@
 > 农历日期Picker组件，功能强大,带有节气，节日功能，易于使用
 
 
-![demo](static/DEMO.png)
+![demo](./static/DEMO.png)
 
 
 ### Getting Start
@@ -68,6 +68,7 @@ export default{
 | format           | 显示格式化；农历仅适用于数字模式；不区分大小写；| String       | －－            | YYYY-MM-DD   |
 | lunarDefault      | 是否默认显示农历                            | Boolean     | true/false      | false         |
 
-
+**GitHub**
+https://github.com/tuhe32/vue-jLunar-datePicker
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
