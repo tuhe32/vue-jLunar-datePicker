@@ -12,7 +12,7 @@ module.exports = {
     app: './src/main.js'
   },
   output: {
-    path: config.build.assetsRoot,
+    path: config.bundle.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
@@ -61,6 +61,7 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
+      // { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") }
     ]
   }
 }

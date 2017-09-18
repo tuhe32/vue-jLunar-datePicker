@@ -104,10 +104,11 @@
 </template>
 <script>
   import moment from 'moment';
+  import '../theme/public.css'
   import JDatePickerScript from './jDatePicker.js'
 
-
   export default {
+    name: 'j-date-picker',
     props: {
       width: {
         type: String,

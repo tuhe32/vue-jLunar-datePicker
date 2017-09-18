@@ -1,10 +1,10 @@
 {
   "name": "vue-jlunar-datepicker",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "农历日期组件",
   "author": "jinwen (hellsar@163.com)",
   "private": false,
-  "main": "dist/vue-jLunar-datePicker.min.js",
+  "main": "./src/components/JDatePicker.vue",
   "license": "MIT",
   "scripts": {
     "dev": "node build/dev-server.js",
