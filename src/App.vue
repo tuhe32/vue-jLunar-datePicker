@@ -70,7 +70,7 @@
           <td>type</td>
           <td>类型</td>
           <td>String</td>
-          <td>DATE(日期)<br>DATETANGE(时间段)</td>
+          <td>DATE(日期)<br>DATERANGE(时间段)</td>
           <td>DATE</td>
         </tr>
         <tr>

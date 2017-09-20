@@ -15,7 +15,7 @@
 **New for 2.0**
 
 1、add a new Property : 
-  type : DATE/DATETANGE (you can pick a period of time by use  DATETANGE option)
+  type : DATE/DATERANGE (you can pick a period of time by use  DATERANGE option)
   
 2、fixed bugs  
 
@@ -73,7 +73,7 @@ export default{
 | :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
 | value             | bind-value(v-model)                      | String,Date  | －－          | －－            |
 | width             | width                                      | String      | －－            | 200px/200         |
-| type              |you can pick a day or pick a period of time | String     | DATE/DATETANGE      | DATE         |
+| type              |you can pick a day or pick a period of time | String     | DATE/DATERANGE      | DATE         |
 | showLunarClass    | The display type of a lunar date; case insensitive;      | String  | FULLLUNAR/LUNAR/NUMBER/MIX|  NUMBER|
 | showLunarIcon       | whether to show lunar icon           | Boolean       | true/false     | false        |
 | laterCurrentYears   | the years number after now  based on the current year | Number     | －－            | 2            |
