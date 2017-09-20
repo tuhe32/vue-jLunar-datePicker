@@ -12,9 +12,11 @@
 ---
 
 
-**New Update for 2.0**
+**New for 2.0**
+
 1、add a new Property : 
   type : DATE/DATETANGE (you can pick a period of time by use  DATETANGE option)
+  
 2、fixed bugs  
 
 **Install**
