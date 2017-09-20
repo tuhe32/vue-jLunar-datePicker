@@ -1,13 +1,7 @@
 /**
  * @1900-2100区间内的公历、农历互转
  * @charset UTF-8
- * @Author  Jea杨(JJonline@JJonline.Cn)
- * @Time    2014-7-21
- * @Time    2016-8-13 Fixed 2033hex、Attribution Annals
- * @Time    2016-9-25 Fixed lunar LeapMonth Param Bug
- * @Version 1.0.2
  * @公历转农历：calendar.solar2lunar(1987,11,01); //[you can ignore params of prefix 0]
- * @农历转公历：calendar.lunar2solar(1987,09,10); //[you can ignore params of prefix 0]
  */
 const calendar = {
 
@@ -16,8 +10,7 @@ const calendar = {
    * @Array Of Property
    * @return Hex
    */
-  lunarInfo:[
-    0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,//1900-1909
+  lunarInfo:[0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,//1900-1909
     0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,//1910-1919
     0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,//1920-1929
     0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,//1930-1939
@@ -32,7 +25,7 @@ const calendar = {
     0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,//2020-2029
     0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,//2030-2039
     0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,//2040-2049
-
+    /**Add By JJonline@JJonline.Cn**/
     0x14b63,0x09370,0x049f8,0x04970,0x064b0,0x168a6,0x0ea50, 0x06b20,0x1a6c4,0x0aae0,//2050-2059
     0x0a2e0,0x0d2e3,0x0c960,0x0d557,0x0d4a0,0x0da50,0x05d55,0x056a0,0x0a6d0,0x055d4,//2060-2069
     0x052d0,0x0a9b8,0x0a950,0x0b4a0,0x0b6a6,0x0ad50,0x055a0,0x0aba4,0x0a5b0,0x052b0,//2070-2079
@@ -281,7 +274,6 @@ const calendar = {
   getTerm:function(y,n) {
     if(y<1900 || y>2100) {return -1;}
     if(n<1 || n>24) {return -1;}
-
     var _table = calendar.sTermInfo[y-1900];
     var _info = [
       parseInt('0x'+_table.substr(0,5)).toString() ,
@@ -337,6 +329,7 @@ const calendar = {
     s+= "\u6708";//加上月字
     return s;
   },
+
   /**
    * 传入年份月份返回第n个星期日的日期数字
    * @param y 年份
@@ -400,32 +393,50 @@ const calendar = {
    * @eg:console.log(calendar.solar2lunar(1987,11,01));
    */
   solar2lunar:function (y,m,d) { //参数区间1900.1.31~2100.12.31
-    if(y<1900 || y>2100) {return -1;}//年份限定、上限
-    if(y==1900&&m==1&&d<31) {return -1;}//下限
-    if(!y) { //未传参  获得当天
+    //年份限定、上限
+    if(y<1900 || y>2100) {
+      return -1;// undefined转换为数字变为NaN
+    }
+    //公历传参最下限
+    if(y==1900&&m==1&&d<31) {
+      return -1;
+    }
+    //未传参  获得当天
+    if(!y) {
       var objDate = new Date();
     }else {
       var objDate = new Date(y,parseInt(m)-1,d)
     }
     var i, leap=0, temp=0;
     //修正ymd参数
-    var y = objDate.getFullYear(),m = objDate.getMonth()+1,d = objDate.getDate();
-    var offset   = (Date.UTC(objDate.getFullYear(),objDate.getMonth(),objDate.getDate()) - Date.UTC(1900,0,31))/86400000;
-    for(i=1900; i<2101 && offset>0; i++) { temp=calendar.lYearDays(i); offset-=temp; }
-    if(offset<0) { offset+=temp; i--; }
+    var y = objDate.getFullYear(),
+      m = objDate.getMonth()+1,
+      d = objDate.getDate();
+    var offset = (Date.UTC(objDate.getFullYear(),objDate.getMonth(),objDate.getDate()) - Date.UTC(1900,0,31))/86400000;
+    for(i=1900; i<2101 && offset>0; i++) {
+      temp    = calendar.lYearDays(i);
+      offset -= temp;
+    }
+    if(offset<0) {
+      offset+=temp; i--;
+    }
 
     //是否今天
-    var isTodayObj = new Date(),isToday=false;
-    if(isTodayObj.getUTCFullYear()==y && isTodayObj.getUTCMonth()+1==m && isTodayObj.getUTCDate()==d) {
+    var isTodayObj = new Date(),
+      isToday    = false;
+    if(isTodayObj.getFullYear()==y && isTodayObj.getMonth()+1==m && isTodayObj.getDate()==d) {
       isToday = true;
     }
     //星期几
-    var nWeek = objDate.getDay(),cWeek = calendar.nStr1[nWeek];
-    if(nWeek==0) {nWeek =7;}//数字表示周几顺应天朝周一开始的惯例
+    var nWeek = objDate.getDay(),
+      cWeek  = calendar.nStr1[nWeek];
+    //数字表示周几顺应天朝周一开始的惯例
+    if(nWeek==0) {
+      nWeek = 7;
+    }
     //农历年
-    var year = i;
-
-    var leap = calendar.leapMonth(i); //闰哪个月
+    var year   = i;
+    var leap   = calendar.leapMonth(i); //闰哪个月
     var isLeap = false;
 
     //效验闰月
@@ -442,31 +453,36 @@ const calendar = {
       if(isLeap==true && i==(leap+1)) { isLeap = false; }
       offset -= temp;
     }
-
+    // 闰月导致数组下标重叠取反
     if(offset==0 && leap>0 && i==leap+1)
+    {
       if(isLeap){
         isLeap = false;
       }else{
         isLeap = true; --i;
       }
-    if(offset<0){ offset += temp; --i; }
+    }
+    if(offset<0)
+    {
+      offset += temp; --i;
+    }
     //农历月
-    var month   = i;
+    var month      = i;
     //农历日
-    var day     = offset + 1;
-
+    var day        = offset + 1;
     //天干地支处理
-    var sm      =   m-1;
-    var gzY     =   calendar.toGanZhiYear(year);
+    var sm         = m-1;
+    var gzY        = calendar.toGanZhiYear(year);
 
-    //月柱 1900年1月小寒以前为 丙子月(60进制12)
-    var firstNode   = calendar.getTerm(year,(m*2-1));//返回当月「节」为几日开始
-    var secondNode  = calendar.getTerm(year,(m*2));//返回当月「节」为几日开始
+    // 当月的两个节气
+    // bugfix-2017-7-24 11:03:38 use lunar Year Param `y` Not `year`
+    var firstNode  = calendar.getTerm(y,(m*2-1));//返回当月「节」为几日开始
+    var secondNode = calendar.getTerm(y,(m*2));//返回当月「节」为几日开始
 
-    //依据12节气修正干支月
-    var gzM     =   calendar.toGanZhi((y-1900)*12+m+11);
+    // 依据12节气修正干支月
+    var gzM        = calendar.toGanZhi((y-1900)*12+m+11);
     if(d>=firstNode) {
-      gzM     =   calendar.toGanZhi((y-1900)*12+m+12);
+      gzM        = calendar.toGanZhi((y-1900)*12+m+12);
     }
 
     //传入的日期的节气与否
@@ -482,84 +498,101 @@ const calendar = {
     }
     //日柱 当月一日与 1900/1/1 相差天数
     var dayCyclical = Date.UTC(y,sm,1,0,0,0,0)/86400000+25567+10;
-    var gzD = calendar.toGanZhi(dayCyclical+d-1);
+    var gzD         = calendar.toGanZhi(dayCyclical+d-1);
     //该日期所属的星座
-    var astro = calendar.toAstro(m,d);
-    var festival = '';
-
+    var astro       = calendar.toAstro(m,d);
+    //该日期所有的节日
+    var festival    = [];
+    //农历传统节日
     if(month == 1 && day == 1){
-      festival = '春节';
+      festival.push('春节');
     }
     else if(month==1&&day==15){
-      festival = '上元节';
+      festival.push('上元节');
     }
     else if(month==2&&day==2){
-      festival = '龙抬头';
+      festival.push('龙抬头');
     }
     else if(month==5&&day==5){
-      festival = '端午';
+      festival.push('端午');
     }
     else if(month==7){
-      if(day==7) festival = '七夕';
-      if(day==15) festival = '中元节';
+      if(day==7) festival.push('七夕');
+      if(day==15) festival.push('中元节');
     }
     else if(month==8&&day==15){
-      festival = '中秋';
+      festival.push('中秋');
     }
     else if(month==9&&day==9){
-      festival = '重阳';
+      festival.push('重阳');
     }
     else if(month==10&&day==15){
-      festival = '下元节';
+      festival.push('下元节');
     }
     else if(month==12){
-      if(day==8) festival = '腊八';
-      if(day==23) festival = '小年';
-      if(isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29) festival = '除夕';
+      if(day==8) festival.push('腊八');
+      if(day==23) festival.push('小年');
+      if(isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29) festival.push('除夕');
     }
-    else if(m==1 && d==1){
-      festival = '元旦';
+    //公历节日
+    if(m==1 && d==1){
+      festival.splice(0,0,'元旦');
     }
     else if(m==2 && d==14){
-      festival = '情人节';
+      festival.push('情人节');
     }
     else if(m==3){
-      if(d==8) festival = '妇女节';
-      if(d==12) festival = '植树节';
+      if(d==8) festival.push('妇女节');
+      if(d==12) festival.push('植树节');
     }
     else if(m==4 && d==1){
-      festival = '愚人节';
+      festival.push('愚人节');
     }
     else if(m==5){
-      if(d==1) festival = '劳动节';
-      if(d==4) festival = '青年节';
-      if(d==calendar.getSunday(y,m,2)) festival = '母亲节';
+      if(d==1) festival.push('劳动节');
+      if(d==4) festival.push('青年节');
+      if(d==calendar.getSunday(y,m,2)) festival.push('母亲节');
     }
     else if(m==6){
-      if(d==1) festival = '儿童节';
-      if(d==4) festival = '青年节';
-      if(d==calendar.getSunday(y,m,3)) festival = '父亲节';
+      if(d==1) festival.push('儿童节');
+      if(d==4) festival.push('青年节');
+      if(d==calendar.getSunday(y,m,3)) festival.push('父亲节');
     }
     else if(m==7 && d==1){
-      festival = '建党节';
+      festival.push('建党节');
     }
     else if(m==8 && d==1){
-      festival = '建军节';
+      festival.push('建军节');
     }
     else if(m==9 && d==10){
-      festival = '教师节';
+      festival.push('教师节');
     }
     else if(m==10 && d==1){
-      festival = '国庆节';
+      festival.push('国庆节');
     }
     else if(m==11 && d==1){
-      festival = '万圣节';
+      festival.push('万圣节');
     }
     else if(m==12){
-      if(d==24) festival = '平安节';
-      if(d==25) festival = '圣诞节';
+      if(d==24) festival.push('平安夜');
+      if(d==25) festival.push('圣诞节');
     }
-    return {'lYear':year,'lMonth':month,'lDay':day,'isFestival':festival!=='','festival':festival,'Animal':calendar.getAnimal(year),'IMonthCn':(isLeap?"\u95f0":'')+calendar.toChinaMonth(month),'IDayCn':calendar.toChinaDay(day),'cYear':y,'cMonth':m,'cDay':d,'gzYear':gzY,'gzMonth':gzM,'gzDay':gzD,'isToday':isToday,'isLeap':isLeap,'nWeek':nWeek,'ncWeek':"\u661f\u671f"+cWeek,'isTerm':isTerm,'Term':Term,'astro':astro};
+    return {'lYear':year,'lMonth':month,'lDay':day,'isFestival':festival.length>0,'festival':festival,'Animal':calendar.getAnimal(year),'IMonthCn':(isLeap?"\u95f0":'')+calendar.toChinaMonth(month),'IDayCn':calendar.toChinaDay(day),'cYear':y,'cMonth':m,'cDay':d,'gzYear':gzY,'gzMonth':gzM,'gzDay':gzD,'isToday':isToday,'isLeap':isLeap,'nWeek':nWeek,'ncWeek':"\u661f\u671f"+cWeek,'isTerm':isTerm,'Term':Term,'astro':astro};
+  },
+
+  getLunar:function (date) {
+    var D;
+    if(date==undefined){
+      D = new Date();
+    }else{
+      D = new Date(date);
+    }
+    D.setHours(D.getHours()+8)//根据国际UTC标准，中国时区应为：UTC+8
+    var cY  =   D.getUTCFullYear();
+    var cM  =   D.getUTCMonth()+1;
+    var cD  =   D.getUTCDate();
+    //console.log('getLunar:月'+cM+'--'+cD+'日')
+    return calendar.solar2lunar(cY,cM,cD);
   },
 
   /**
@@ -613,19 +646,19 @@ const calendar = {
 
     return calendar.solar2lunar(cY,cM,cD);
   },
-  getLunar:function (date) {
-    var D;
-    if(date==undefined){
-      D = new Date();
-    }else{
-      D = new Date(date);
-    }
-    D.setHours(D.getHours()+8)//根据国际UTC标准，中国时区应为：UTC+8
-    var cY  =   D.getUTCFullYear();
-    var cM  =   D.getUTCMonth()+1;
-    var cD  =   D.getUTCDate();
-    //console.log('getLunar:月'+cM+'--'+cD+'日')
-    return calendar.solar2lunar(cY,cM,cD);
+  /**
+   * 传入农历日期
+   * @param date 类型String，格式：L2017-01-02；闰月：LR2017-06-03
+   * @returns {*|JSON}
+   */
+  getSolar(date) {
+    if(date == undefined || date == null || date == '' || date.indexOf('L') == -1) return null;
+    var isLeapMonth = date.indexOf('R')>-1;
+    var D = date.replace(/L/,'').replace(/R/,'').split('-');
+    var cY  =   parseInt(D[0]);
+    var cM  =   parseInt(D[1]);
+    var cD  =   parseInt(D[2]);
+    return calendar.lunar2solar(cY,cM,cD,isLeapMonth);
   },
 };
 export default { calendar }

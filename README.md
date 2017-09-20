@@ -11,6 +11,12 @@
 
 ---
 
+
+**New Update for 2.0**
+1、add a new Property : 
+  type : DATE/DATETANGE (you can pick a period of time by use  DATETANGE option)
+2、fixed bugs  
+
 **Install**
 
 `npm install vue-jlunar-datepicker --save`
@@ -32,7 +38,7 @@ test.vue
 
 ```vue
 <template>
-	<j-date-picker v-model="value1":width="width1" :showLunarClass="showLunarClass" :lunarDefault="lunarDefault" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
+	<j-date-picker v-model="value1":width="width1" :type="type" :showLunarClass="showLunarClass" :lunarDefault="lunarDefault" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
 </template>
 <script>
 export default{
@@ -40,6 +46,7 @@ export default{
     return{
       data:{
         value1:'',
+        type:'DATE',
         showLunarClass:'MIX',
         laterCurrentYears:2,
         showLunarIcon:true,
@@ -64,6 +71,7 @@ export default{
 | :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
 | value             | bind-value(v-model)                      | String,Date  | －－          | －－            |
 | width             | width                                      | String      | －－            | 200px/200         |
+| type              |you can pick a day or pick a period of time | String     | DATE/DATETANGE      | DATE         |
 | showLunarClass    | The display type of a lunar date; case insensitive;      | String  | FULLLUNAR/LUNAR/NUMBER/MIX|  NUMBER|
 | showLunarIcon       | whether to show lunar icon           | Boolean       | true/false     | false        |
 | laterCurrentYears   | the years number after now  based on the current year | Number     | －－            | 2            |

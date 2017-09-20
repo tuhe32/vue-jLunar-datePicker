@@ -13,7 +13,7 @@ new Vue({
 
 // import Vue from 'vue'
 // import App from './App'
-// import './theme/public.css'
+
 
 // import vuePayKeyboard from './lib/indexvue-pay-keyboard'
 

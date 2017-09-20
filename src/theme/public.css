@@ -111,6 +111,17 @@ a{ cursor: pointer;}
   box-shadow:2px 2px 5px #C9C9C9;
   overflow: hidden;
 }
+.full-jcalendar__main.is-daterange{
+  width:593px;
+}
+.full-jcalendar__main .date-range__month{
+  float: left;
+  width:296px;
+  overflow: hidden;
+}
+.full-jcalendar__main .date-range__month.leftMonth{
+  border-right:1px solid #F8F8F8;
+}
 .full-jcalendar-header{
   position: relative;
   width:100%;
@@ -124,6 +135,9 @@ a{ cursor: pointer;}
 .full-jcalendar-header span{ display: inline-block;}
 .full-jcalendar-header .title-year:hover,.full-jcalendar-header .title-month:hover{
   color:#50bfff;
+}
+.date-range__month .full-jcalendar-header .title-year:hover,.date-range__month .full-jcalendar-header .title-month:hover{
+  color:#333;
 }
 .full-jcalendar-header .prev-month,.full-jcalendar-header .next-month {
   cursor: pointer;
@@ -144,6 +158,27 @@ a{ cursor: pointer;}
   right: 5px;
   top: 5px;
 }
+
+.date-range__month .full-jcalendar-header .prev-year{
+  position: absolute;
+  z-index: 1676;
+  left: 5px;
+  top: 5px;
+}
+
+.date-range__month .full-jcalendar-header .prev-month{
+  left:35px;
+}
+.date-range__month .full-jcalendar-header .next-year{
+  position: absolute;
+  z-index: 1676;
+  right: 5px;
+  top: 5px;
+}
+.date-range__month .full-jcalendar-header .next-month{
+  right:35px;
+}
+
 .full-jcalendar__body {
   margin: 0;
   padding: 0;
@@ -192,7 +227,11 @@ a{ cursor: pointer;}
 .full-jcalendar__body .day-cell .day-number .solar {
   font-size: 12px;
   color: #483a32;
+  /*text-shadow: 1px 1px 1px #ddd;*/
 }
+/*.full-jcalendar__body .day-cell.not-cur-month .solar {*/
+  /*text-shadow: none;*/
+/*}*/
 .full-jcalendar__body .day-cell .day-number .solar .is-leap {
   display: inline-block;
   width:14px;
@@ -232,6 +271,9 @@ a{ cursor: pointer;}
   border-top: .5em solid #20a0ff;
   border-left: .5em solid transparent;
 }
+.full-jcalendar__body .day-cell.choose {
+  background-color: #d2ecff;
+}
 .full-jcalendar__body .day-cell.select {
   background-color: #009bfe;
 }
@@ -254,8 +296,18 @@ a{ cursor: pointer;}
 .full-jcalendar__body .day-cell:hover {
   background-color: #ECF1F4;
 }
+.full-jcalendar__body .day-cell.choose:hover {
+  background-color: #009bfe;
+}
+.full-jcalendar__body .day-cell.choose:hover .lunar,
+.full-jcalendar__body .day-cell.choose:hover .solar,
+.full-jcalendar__body .day-cell.choose:hover .term ,
+.full-jcalendar__body .day-cell.choose:hover .festival ,
+.full-jcalendar__body .day-cell.choose:hover .is-today{
+  color: #fff;
+}
 .full-jcalendar__body .select:hover{
-  background-color: #A2DBFB;
+  background-color: #009bfe;
 }
 .full-jcalendar__month,.full-jcalendar__year{
   position: absolute;
