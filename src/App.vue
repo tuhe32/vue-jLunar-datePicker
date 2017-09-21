@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <label class="tt">请选择日期: </label>
-    <j-date-picker v-model="value1":width="width1" :showLunarClass="showLunarClass" :isLunarDefault="isLunarDefault" :type="type" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
+    <j-date-picker v-model="value1":width="width1" :showLunarClass="showLunarClass" :showLunarControl="showLunarControl" :type="type" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
     <p class="tt" style="padding-left:10px;">选择的日期是：{{ value1 }}</p>
     <hr>
     <p>返回结果：公历：2017-01-01；农历：L2017-01-01；农历闰月：LR2017-06-01; 日期段(公历)：['2017-01-02','2017.02.01'];日期段(农历)：['L2017-01-02','L2017.02.01'];</p>
@@ -26,7 +26,7 @@
       </select>
       <br>
 
-      <label>是否默认启用农历：</label><input type="checkbox" v-model="isLunarDefault"  /><br>
+      <label>是否显示农历控制组件：</label><input type="checkbox" v-model="showLunarControl"  /><br>
 
       <label>是否显示农历标记：</label><input type="checkbox" v-model="showLunarIcon"  /><br>
 
@@ -48,7 +48,7 @@
       </p>
       <p>HTML:</p>
       <p class="js">
-       < j-date-picker v-model="value1" width="300" showLunarClass="fulllunar" :laterCurrentYears="5" isLunar showLunarIcon format="yyyy.mm.dd">< /j-date-picker>
+       < j-date-picker v-model="value1" width="300" showLunarClass="fulllunar" :laterCurrentYears="5" :showLunarControl='showLunarControl' showLunarIcon format="yyyy.mm.dd">< /j-date-picker>
       </p>
       <h5>参数：</h5>
       <table border="1" cellspacing="0" width="100%">
@@ -93,7 +93,7 @@
           <td>showLunarIcon</td>
           <td>是否显示农历标记</td>
           <td>Boolean</td>
-          <td>true/false</td>
+          <td>true<br>false</td>
           <td>false</td>
         </tr>
         <tr>
@@ -111,11 +111,11 @@
           <td>YYYY-MM-DD</td>
         </tr>
         <tr>
-          <td>isLunarDefault</td>
-          <td>是否默认启用农历</td>
+          <td>showLunarControl</td>
+          <td>是否显示农历控制组件</td>
           <td>Boolean</td>
           <td>true<br>false</td>
-          <td>false</td>
+          <td>true</td>
         </tr>
       </table>
     </div>
@@ -136,7 +136,7 @@
         showLunarClass:'NUMBER',
         laterCurrentYears:2,
         showLunarIcon:true,
-        isLunarDefault:false,
+        showLunarControl:true,
         width1:'600',
         format:'YYYY.MM.DD',
       }
