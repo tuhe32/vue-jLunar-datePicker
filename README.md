@@ -1,7 +1,7 @@
 # vue-jLunar-datePicker
 @JinWen
 
-> Lunar-Date-Picker component,lightWeight,powerful，easy use,with festival and solar terms.
+> Lunar-Date-Picker component, lightWeight, powerful, easy to use, with festival and solar terms.
 
 
 ![demo](./static/DEMO.png)
@@ -40,7 +40,7 @@ test.vue
 
 ```vue
 <template>
-	<j-date-picker v-model="value1":width="width1" :type="type" :showLunarClass="showLunarClass" :lunarDefault="lunarDefault" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
+	<j-date-picker v-model="value1":width="width1" :type="type" :showLunarClass="showLunarClass" :showLunarControl="showLunarControl" :laterCurrentYears="laterCurrentYears" :showLunarIcon="showLunarIcon" :format="format"></j-date-picker>
 </template>
 <script>
 export default{
@@ -52,7 +52,7 @@ export default{
         showLunarClass:'MIX',
         laterCurrentYears:2,
         showLunarIcon:true,
-        lunarDefault:false,
+        showLunarControl:true,
         width1:'300',
         format:'YYYY.MM.DD',
       }
@@ -71,14 +71,14 @@ export default{
 
 | Properties      | Description                      | Type      |  Optional value       | Default value         |
 | :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
-| value             | bind-value(v-model)                      | String,Date  | －－          | －－            |
+| value             | bind-value(v-model)                      | String,Date,Array  | －－          | －－            |
 | width             | width                                      | String      | －－            | 200px/200         |
 | type              |you can pick a day or pick a period of time | String     | DATE/DATERANGE      | DATE         |
 | showLunarClass    | The display type of a lunar date; case insensitive;      | String  | FULLLUNAR/LUNAR/NUMBER/MIX|  NUMBER|
 | showLunarIcon       | whether to show lunar icon           | Boolean       | true/false     | false        |
 | laterCurrentYears   | the years number after now  based on the current year | Number     | －－            | 2            |
 | format           | format Date | String       | －－            | YYYY-MM-DD   |
-| lunarDefault      | whether to show the lunar calendar by default  | Boolean     | true/false      | false         |
+| showLunarControl    | whether to show the lunar control by default  | Boolean   | true/false      | true         |
 
 **GitHub**
 https://github.com/tuhe32/vue-jLunar-datePicker

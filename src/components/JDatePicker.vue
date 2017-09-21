@@ -22,8 +22,8 @@
           <span class="title-year" @click="showYearList">{{year}}年</span>
           <span style="width:10px;"></span>
           <span class="title-month" @click="monthVisible = true">{{month}}月</span>
-          <span style="width:10px;"></span>
-          <label><input type="checkbox" v-model="isLunar" @change="onLunarChange" />农历</label>
+          <span style="width:10px;" v-if="showLunarControl"></span>
+          <label v-if="showLunarControl"><input type="checkbox" v-model="isLunar" @change="onLunarChange" />农历</label>
           <!-- header 切换月份 -->
           <p class="prev-month" @click.stop="goPrev"><i class="icon iconfont icon-xiangzuojiantou"></i></p>
           <p class="next-month" @click.stop="goNext"><i class="icon iconfont icon-xiangyoujiantou"></i></p>
@@ -109,8 +109,8 @@
           <span class="title-year">{{year}}年</span>
           <span style="width:10px;"></span>
           <span class="title-month">{{month}}月</span>
-          <span style="width:10px;"></span>
-          <label><input type="checkbox" v-model="isLunar" @change="onLunarChange" />农历</label>
+          <span style="width:10px;" v-if="showLunarControl"></span>
+          <label v-if="showLunarControl"><input type="checkbox" v-model="isLunar" @change="onLunarChange" />农历</label>
           <!-- header 切换月份 -->
           <p class="prev-year" @click.stop="goYearPrev"><i class="icon iconfont icon-xiangzuojiantou"></i></p>
           <p class="prev-month" @click.stop="goPrev"><i class="icon iconfont icon-xiangzuojiantou"></i></p>
@@ -239,9 +239,9 @@
         type: Number,
         default: 2,
       },
-      isLunarDefault:{
+      showLunarControl:{
         type: Boolean,
-        default: false,
+        default: true,
       },
       type:{
         type: String,
@@ -257,9 +257,6 @@
 
           this.handleInputText(newValue);
 
-      },
-      'isLunarDefault': function (newValue, oldValue) {
-          this.isLunar = typeof newValue != 'boolean'?false:newValue;
       },
       'showLunarIcon': function (newValue, oldValue) {
       },
