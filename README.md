@@ -93,13 +93,13 @@ export default{
 
 | Properties      | Description                      | Type      |  Optional value       | Default value         |
 | :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
-| value             | bind-value(v-model)                      | String,Date,Array  | －－          | －－            |
-| width             | width                                      | String      | －－            | 200px/200         |
+| value             | bind-value(v-model)                      | String,Date,Array  | --          | --           |
+| width             | width                                      | String      | --            | 200px/200         |
 | type              |you can pick a day or pick a period of time | String     | DATE/DATERANGE      | DATE         |
 | showLunarClass    | The display type of a lunar date; case insensitive;      | String  | FULLLUNAR/LUNAR/NUMBER/MIX|  NUMBER|
 | showLunarIcon       | whether to show lunar icon           | Boolean       | true/false     | false        |
-| showBackYears   | the years number after now  based on the current year | Number     | －－            | 2            |
-| format           | format Date | String       | －－            | YYYY-MM-DD   |
+| showBackYears   | the years number after now  based on the current year | Number     | --            | 2            |
+| format           | format Date | String       | --            | YYYY-MM-DD   |
 | showLunarControl    | whether to show the lunar control by default  | Boolean   | true/false      | true         |
 | editable    | whether to input your date int the component  | Boolean   | true/false      | false         |
 | placeholder    | placeholder for component             | String        | --                  | --         |
