@@ -1,22 +1,22 @@
 <template>
-  <div class="full-jcalendar">
-    <div class="full-jcalendar__input" :class="{'is-hover':clearVisible}" @click="onInputFocus" :style="{width:(handleWidth-20)+'px'}">
-      <p class="input-text" :style="{width:(handleWidth-20-20)+'px'}">{{ inputText }}</p>
-      <p class="icon-tip" v-show="isLunar && showLunarIcon">
-        <i v-if="isLeap">闰</i>
-        <i v-else>农</i>
-      </p>
-      <p class="input-icon" @mouseover="onInputOver" @mouseout="onInputOut">
-        <i class="iconfont icon-time" style="display: none"></i>
-        <i class="iconfont icon-richeng" v-show="!clearVisible"></i>
-        <i class="iconfont icon-guanbi is-clear" v-show="clearVisible" @click="onClearInput"></i>
-      </p>
+  <div class="full-jcalendar" :class="{'is-disabled':disabled}" :style="{width:handleWidth+'px'}">
 
-      <input type="text" :value="value" style="display: none" @input="value = $event.target.value" />
-    </div>
+    <p class="input-icon__tip" v-show="isLunar && showLunarIcon">
+      <i v-if="isLeap">闰</i>
+      <i v-else>农</i>
+    </p>
+    <p class="input-icon" @mouseover="onInputOver" @mouseout="onInputOut">
+      <i class="iconfont icon-time" style="display: none"></i>
+      <i class="iconfont icon-richeng" v-show="!clearVisible"></i>
+      <i class="iconfont icon-guanbi is-clear" v-show="clearable && clearVisible" @click="onClearInput"></i>
+    </p>
+
+    <input type="text" :value="inputText" class="input__inner" :placeholder="placeholder" @click="onInputFocus" :readonly="!editable || type.toUpperCase() ==='DATERANGE' || (isLunar && showLunarClass.toUpperCase()!='NUMBER')" :disabled="disabled" @input="inputText = $event.target.value" @change="handleInputChange" />
+
+    <!--日期控件弹窗主体-->
     <div class="full-jcalendar__main" :class="{'is-daterange':type.toUpperCase() === 'DATERANGE'}" v-show="calendarVisible">
       <!--单日期模式-->
-      <div v-if="type.toUpperCase() === 'DATE'">
+      <div v-show="type.toUpperCase() === 'DATE'">
 
         <div class="full-jcalendar-header">
           <span class="title-year" @click="showYearList">{{year}}年</span>
@@ -43,7 +43,7 @@
           <div class="week-row" v-for="week in calendarDatas">
             <!--日期 日  单元格-->
             <div class="day-cell" v-for="day in week"
-                 :class="[{'today': day.isToday,'select':day.isSelect,'not-cur-month': !day.isCurMonth }]"
+                 :class="[{'today': day.isToday,'not-optional':isNotOptional(day),'select':day.isSelect,'not-cur-month': !day.isCurMonth }]"
                  @click="onDateSelect(day)">
               <!-- 日期 节气 农历 -->
               <div class="day-number">
@@ -130,7 +130,7 @@
           <div class="week-row" v-for="week in calendarDatas" @mouseout="onMouseOut">
             <!--日期 日  单元格-->
             <div class="day-cell" v-for="day in week"
-                 :class="[{'today': day.isToday,'choose':isChoose(day),'select':isSelect(day),'not-cur-month': !day.isCurMonth }]"
+                 :class="[{'today': day.isToday,'not-optional':isNotOptional(day),'choose':isChoose(day),'select':isSelect(day),'not-cur-month': !day.isCurMonth }]"
                  @click="onDateSelect(day)" @mouseover="onMouseOver(day)">
               <!-- 日期 节气 农历 -->
               <div class="day-number">
@@ -178,7 +178,7 @@
           <div class="week-row" v-for="week in calendarDatas2" @mouseout="onMouseOut">
             <!--日期 日  单元格-->
             <div class="day-cell" v-for="day in week"
-                 :class="[{'today': day.isToday,'choose':isChoose(day),'select':isSelect(day),'not-cur-month': !day.isCurMonth }]"
+                 :class="[{'today': day.isToday,'not-optional':isNotOptional(day),'choose':isChoose(day),'select':isSelect(day),'not-cur-month': !day.isCurMonth }]"
                  @click="onDateSelect(day)" @mouseover="onMouseOver(day);">
               <!-- 日期 节气 农历 -->
               <div class="day-number">
@@ -220,7 +220,11 @@
         default: '200',
       },
       value: {
-//        type:String,
+        type:[String,Date,Array],
+        default: ''
+      },
+      placeholder:{
+        type: String,
         default: ''
       },
       format: {
@@ -235,7 +239,7 @@
         type: Boolean,
         default: false,
       },
-      laterCurrentYears:{
+      showBackYears:{
         type: Number,
         default: 2,
       },
@@ -243,19 +247,52 @@
         type: Boolean,
         default: true,
       },
+      disabled:{
+        type: Boolean,
+        default: false,
+      },
+      editable:{
+        type: Boolean,
+        default: true,
+      },
+      clearable:{
+        type: Boolean,
+        default: true,
+      },
       type:{
         type: String,
         default: "DATE",//DATE - 日期类型；DATERANGE － 时间段；
       },
+      rangeSeparator:{
+        type: String,
+        default: "-",//时间段分隔符
+      },
+      pickerOptions:{
+        type:Object,
+        default:{}
+      },
+    },
+    computed: {
+      handleWidth: function () {
+        let w = this.width.toString();
+        if (w == null || w == '') {
+          return 200;
+        }
+        if (w.indexOf('px') > -1) w = w.replace(/px/, '');
+        let w0 = parseInt(w) || 0;
+        if (w0 == 0) {
+          return 200;
+        }
+        return w0;
+      },
     },
     watch: {
       'value': function (newValue, oldValue) {
-          this.inputText = '';
-          this.isLeap = false;
-          this.isLunar = false;
-          if (newValue == null || newValue == '' || newValue.length == 0) return;
+        this.inputText = '';
+        this.isLeap = false;
+        this.isLunar = false;
 
-          this.handleInputText(newValue);
+        this.handleInputText(newValue);
 
       },
       'showLunarIcon': function (newValue, oldValue) {
@@ -283,29 +320,17 @@
         isLeap: false,//是否闰月
       }
     },
-    computed: {
-      handleWidth: function () {
-        let w = this.width.toString();
-        if (w == null || w == '') {
-          return 200;
-        }
-        if (w.indexOf('px') > -1) w = w.replace(/px/, '');
-        let w0 = parseInt(w) || 0;
-        if (w0 == 0) {
-          return 200;
-        }
-        return w0;
-      },
-    },
     created () {
       let month = moment()
       this.monthDay = month.toISOString();
       this.todayYear = month.year();
       this.loadCalendar();
+
       document.addEventListener('click', (e) => {
-        let fjMain = this.$el.querySelector('.full-jcalendar__main');
-        let fjInput = this.$el.querySelector('.full-jcalendar__input');
-        if (!fjMain.contains(e.target) && !fjInput.contains(e.target)) {
+        let icon = this.$el.querySelector('.input-icon');
+        let input = this.$el.querySelector('.input__inner');
+        let main = this.$el.querySelector('.full-jcalendar__main');
+        if (!icon.contains(e.target) && !input.contains(e.target) && !main.contains(e.target)) {
           this.calendarVisible = false;
           if (this.selectDay.length > 0) {
             this.monthDay = this.selectDay[0];
@@ -313,24 +338,29 @@
         }
       });
 
+      this.handleInputText(this.value,true);
     },
     methods: {
-      handleInputText(newValue){
+      handleInputText(newValue,isNeedEmit){
+        if (newValue == undefined || newValue == null || !newValue.toString().length) return;
+
         let valueDay = '', valueDay2 = '', result = '';
 
-        if(this.type.toUpperCase() == 'DATE'){
+        if (this.type.toUpperCase() == 'DATE') {
           //单日期模式
-          let isLunar = newValue.indexOf('L')>-1;
+          newValue = newValue.toString();
+          let isLunar  = newValue.indexOf('L') > -1;
           this.isLunar = isLunar;
+
           if (isLunar) {
             //农历模式
             let showLunarClass = this.showLunarClass.toUpperCase();
-            let lunarDate = JDatePickerScript.calendar.getSolar(newValue);
+            let lunarDate      = JDatePickerScript.calendar.getSolar(newValue);
 
-            valueDay = new Date(lunarDate.cYear+'-'+lunarDate.cMonth+'-'+lunarDate.cDay).toISOString();
+            valueDay = new Date(lunarDate.cYear + '-' + lunarDate.cMonth + '-' + lunarDate.cDay).toISOString();
 
             if (showLunarClass == 'NUMBER') {
-              result = moment(new Date(lunarDate.lYear+'-'+lunarDate.lMonth+'-'+lunarDate.lDay)).format(this.format.toUpperCase());
+              result = moment(new Date(lunarDate.lYear + '-' + lunarDate.lMonth + '-' + lunarDate.lDay)).format(this.format.toUpperCase());
             }
             else if (showLunarClass == 'MIX') {
               result = lunarDate.gzYear + '(' + lunarDate.lYear + ')[' + lunarDate.Animal + ']年 ' + lunarDate.IMonthCn + lunarDate.IDayCn;
@@ -342,35 +372,41 @@
               result = lunarDate.gzYear + '[' + lunarDate.Animal + ']年 ' + lunarDate.IMonthCn + lunarDate.IDayCn;
             }
 
-          }else{
+          } else {
             //公历模式
             let date = new Date(newValue);
             valueDay = date.toISOString();
-            result = moment(date).format(this.format.toUpperCase());
+            result   = moment(date).format(this.format.toUpperCase());
+            this.$emit('input',moment(date).format('YYYY-MM-DD'))
           }
-          this.monthDay = valueDay;
-          this.selectDay = [ valueDay ];
+          this.monthDay  = valueDay;
+          this.selectDay = [valueDay];
           this.inputText = result;
           return;
         }
-        if(this.type.toUpperCase() == 'DATERANGE'){
+        if (this.type.toUpperCase() == 'DATERANGE') {
           //时间段模式
           //判断newValue是否为数组；ES2005以上支持isArray
-          if(Array.isArray(newValue) && newValue.length==2){
+          if (Array.isArray(newValue) && newValue.length == 2) {
             let beginDt = newValue[0];
             let endDt = newValue[1];
+            //判断value是否为日期类型
+            if(beginDt == undefined || beginDt == null || !beginDt.toString().length) return;
+            if(endDt == undefined || endDt == null || !endDt.toString().length) return;
+            beginDt = beginDt.toString();
+            endDt = endDt.toString();
 
-            let isLunar = beginDt.indexOf('L')>-1;
+            let isLunar  = beginDt.indexOf('L') > -1;
             this.isLunar = isLunar;
-            if(isLunar) {
+            if (isLunar) {
               //农历模式
               let beginDateResult = '', endDateResult = '';
-              let showLunarClass = this.showLunarClass.toUpperCase();
+              let showLunarClass  = this.showLunarClass.toUpperCase();
 
               let beginLunarDate = JDatePickerScript.calendar.getSolar(beginDt);
-              let endLunarDate   = JDatePickerScript.calendar.getSolar(endDt);
+              let endLunarDate  = JDatePickerScript.calendar.getSolar(endDt);
 
-              valueDay = new Date(beginLunarDate.cYear + '-' + beginLunarDate.cMonth + '-' + beginLunarDate.cDay).toISOString();
+              valueDay  = new Date(beginLunarDate.cYear + '-' + beginLunarDate.cMonth + '-' + beginLunarDate.cDay).toISOString();
               valueDay2 = new Date(endLunarDate.cYear + '-' + endLunarDate.cMonth + '-' + endLunarDate.cDay).toISOString();
 
               if (showLunarClass == 'NUMBER') {
@@ -390,29 +426,58 @@
                 endDateResult   = endLunarDate.gzYear + '[' + endLunarDate.Animal + ']年 ' + endLunarDate.IMonthCn + endLunarDate.IDayCn;
               }
 
-              result = beginDateResult + ' - ' + endDateResult;
+              result = beginDateResult + ' ' + this.rangeSeparator + ' ' + endDateResult;
 
-            }else{
+            } else {
               //公历模式
+              if(isNeedEmit){
+                this.$emit('input',[moment(new Date(beginDt)).format('YYYY-MM-DD'),moment(new Date(endDt)).format('YYYY-MM-DD')]);
+                return;
+              }
+
               let beginDate = new Date(beginDt);
-              let endDate = new Date(endDt);
-              valueDay = beginDate.toISOString();
-              valueDay2 = endDate.toISOString();
-              result = moment(beginDate).format(this.format.toUpperCase()) + ' - ' + moment(endDate).format(this.format.toUpperCase());
+              let endDate   = new Date(endDt);
+              valueDay      = beginDate.toISOString();
+              valueDay2     = endDate.toISOString();
+              result        = moment(beginDate).format(this.format.toUpperCase()) + ' ' + this.rangeSeparator + ' ' + moment(endDate).format(this.format.toUpperCase());
             }
-            this.monthDay = valueDay;
-            this.selectDay = [valueDay,valueDay2];
-            this.chooseDay = [valueDay,valueDay2];
-            this.inputText = result;
+            this.monthDay   = valueDay;
+            this.selectDay  = [valueDay, valueDay2];
+            this.chooseDay  = [valueDay, valueDay2];
+            this.inputText  = result;
           }
         }
       },
+      handleInputChange(e){
+        let result = e.target.value;
+        if(this.type.toUpperCase() == 'DATE'){
+          //单日期
+          if(this.isLunar){
+            //农历 NUMBER 模式
+            if(this.showLunarClass.toUpperCase() == 'NUMBER') {
+              let regex = /\d{4}[-\.\/]\d{1,2}[-\.\/]\d{1,2}/;
+              if (!regex.test(result)) return;
+              result = result.replace(/\./g, '-').replace(/\//g, '-');
+              result = 'L' + moment(new Date(result)).format('YYYY-MM-DD');
+            }
+          }else{
+            let regex = /\d{4}[-\.\/]\d{1,2}[-\.\/]\d{1,2}/;
+            if (!regex.test(result)) return;
+            result = result.replace(/\./g, '-').replace(/\//g, '-');
+            result = moment(new Date(result)).format('YYYY-MM-DD');
+          }
+        }
+        this.$emit('change',result);
+        this.$emit('input',result);
 
+      },
       onClearInput(){
         if(this.type.toUpperCase() == 'DATERANGE'){
-            this.$emit('input',[]);
+          this.$emit('change',[]);
+          this.$emit('input', []);
         }else {
-          this.$emit('input', '');
+          this.$emit('change', '');
+          this.$emit('input',  '');
         }
         this.selectDay = [];
         this.chooseDay = [];
@@ -420,11 +485,18 @@
         this.clearVisible = false;
       },
       onInputOver(){
+        if(this.disabled) return;
         if(this.value ==null || this.value == '')return;
         this.clearVisible = true;
       },
       onInputOut(){
         this.clearVisible = false;
+      },
+      isNotOptional(day){
+        if ('disabledDate' in this.pickerOptions) {
+          return this.pickerOptions.disabledDate(new Date(day.date));
+        }
+        return false;
       },
       isChoose(day){
         //是否在选中时间段区域内
@@ -440,6 +512,7 @@
         return this.chooseDay.length>0 & moment(day.date).isSame(new Date(this.chooseDay[0]),'day') & day.isCurMonth;
       },
       onInputFocus(){
+        if(this.disabled) return;
         this.loadCalendar();
         this.calendarVisible = true;
       },
@@ -455,7 +528,9 @@
               let endDay         = JDatePickerScript.calendar.getLunar(this.value[1].replace(/L/,'').replace(/R/,''));
               let beginDayResult = 'L' + (beginDay.isLeap ? 'R' : '') + moment(new Date(beginDay.lYear + '-' + beginDay.lMonth + '-' + beginDay.lDay)).format('YYYY-MM-DD');
               let endDayResult   = 'L' + (endDay.isLeap ? 'R' : '') + moment(new Date(endDay.lYear + '-' + endDay.lMonth + '-' + endDay.lDay)).format('YYYY-MM-DD');
-              this.$emit('input', [beginDayResult,endDayResult]);
+
+              this.$emit('change',[beginDayResult,endDayResult]);
+              this.$emit('input' ,[beginDayResult,endDayResult]);
             } else {
               //由农历到公历
               //判断日期结果集中日期格式是否为农历，若不是不作处理直接返回。
@@ -464,7 +539,9 @@
               let endDay         = JDatePickerScript.calendar.getSolar(this.value[1]);
               let beginDayResult = moment(new Date(beginDay.cYear + '-' + beginDay.cMonth + '-' + beginDay.cDay)).format('YYYY-MM-DD');
               let endDayResult   = moment(new Date(endDay.cYear + '-' + endDay.cMonth + '-' + endDay.cDay)).format('YYYY-MM-DD');
-              this.$emit('input', [beginDayResult,endDayResult]);
+
+              this.$emit('change',[beginDayResult,endDayResult]);
+              this.$emit('input' ,[beginDayResult,endDayResult]);
             }
           } else {
             //单日期模式
@@ -475,14 +552,16 @@
               if(this.value.indexOf('L')>-1) return;
               day = JDatePickerScript.calendar.getLunar(this.value.replace(/L/,'').replace(/R/,''));
               result = 'L' + (day.isLeap ? 'R' : '') + moment(new Date(day.lYear + '-' + day.lMonth + '-' + day.lDay)).format('YYYY-MM-DD');
-              this.$emit('input', result);
+              this.$emit('change', result);
+              this.$emit('input' , result);
             } else {
               //由农历到公历
               //判断日期结果中日期格式是否为农历，若不是不作处理直接返回。
               if(this.value.indexOf('L') == -1) return;
               day = JDatePickerScript.calendar.getSolar(this.value);
               result = moment(new Date(day.cYear + '-' + day.cMonth + '-' + day.cDay)).format('YYYY-MM-DD');
-              this.$emit('input', result);
+              this.$emit('change', new Date(result));
+              this.$emit('input' , new Date(result));
             }
           }
 
@@ -491,7 +570,7 @@
       showYearList(){
         //公式：A ＝ 默认当前年所在页面的起始年；S ＝ 选择日期所在年份；Z(pagesize) = 12; Math.ceil : 向上入，有小数就向上＋1；
         // result = A - Math.ceil( (A-S) / Z ) * Z;
-        let A = this.todayYear + parseInt(this.laterCurrentYears) - 11;
+        let A = this.todayYear + parseInt(this.showBackYears) - 11;
         this.startYear = A - Math.ceil((A - this.year )/12) * 12;
 
         this.yearVisible = true;
@@ -501,7 +580,7 @@
         this.startYear -= 12;
       },
       goYearNextList(){
-        if(this.startYear>=this.todayYear + parseInt(this.laterCurrentYears) - 11) return;
+        if(this.startYear>=this.todayYear + parseInt(this.showBackYears) - 11) return;
         this.startYear += 12;
       },
       goYearPrev(){
@@ -523,13 +602,13 @@
         this.loadCalendar()
       },
       onMouseOver(day){
-          if(this.selectDay.length == 1) {
-            let currDay = moment(day.date);
-            let beginDt = this.selectDay[0];
-            if (currDay.isAfter(beginDt)) {
-                this.chooseDay = [beginDt,currDay.toISOString()];
-            }
+        if (this.selectDay.length == 1) {
+          let currDay = moment(day.date);
+          let beginDt = this.selectDay[0];
+          if (currDay.isAfter(beginDt)) {
+            this.chooseDay = [beginDt, currDay.toISOString()];
           }
+        }
       },
       onMouseOut(){
         if (this.selectDay.length < 2) {
@@ -537,6 +616,7 @@
         }
       },
       onDateSelect(day){
+        if(this.isNotOptional(day)) return;
         let dayDate = new Date(day.date).toISOString();
         if(this.type.toUpperCase() == 'DATERANGE') {
           if (this.selectDay.length >= 2) {
@@ -564,9 +644,11 @@
               let beginLunar = JDatePickerScript.calendar.getLunar(this.selectDay[0]);
               beginLunarDateResult = 'L' + (beginLunar.isLeap ? 'R' : '') + moment(new Date(beginLunar.lYear + '-' + beginLunar.lMonth + '-' + beginLunar.lDay)).format("YYYY-MM-DD");
               endLunarDateResult = 'L' + (day.lDate.isLeap ? 'R' : '') + moment(new Date(day.lDate.lYear + '-' + day.lDate.lMonth + '-' + day.lDate.lDay)).format("YYYY-MM-DD");
-              this.$emit('input', [beginLunarDateResult, endLunarDateResult])
+              this.$emit('change', [beginLunarDateResult, endLunarDateResult])
+              this.$emit('input' , [beginLunarDateResult, endLunarDateResult])
             }else{
-              this.$emit('input', [moment(this.selectDay[0]).format('YYYY-MM-DD'), moment(this.selectDay[1]).format('YYYY-MM-DD')])
+              this.$emit('change', [moment(this.selectDay[0]).format('YYYY-MM-DD'), moment(this.selectDay[1]).format('YYYY-MM-DD')])
+              this.$emit('input' , [moment(this.selectDay[0]).format('YYYY-MM-DD'), moment(this.selectDay[1]).format('YYYY-MM-DD')])
             }
             this.calendarVisible = false;
           }
@@ -579,7 +661,8 @@
           }
           this.monthDay = dayDate;
           this.calendarVisible = false;
-          this.$emit('input', result);
+          this.$emit('change', result);
+          this.$emit('input' , result);
         }
       },
       onMonthSelect(command){

@@ -44,48 +44,36 @@ a{ cursor: pointer;}
 
 .full-jcalendar{
   position: relative;
+  font-size: 14px;
   display: inline-block;
 }
-.full-jcalendar__input{
-  position: relative;
-  height:24px;
-  line-height:24px;
-  padding:5px 10px;
-  text-align: left;
-  border:1px solid #E0D7D2;
-  border-radius: 5px;
-  font-size: 14px;
-  color:#333;
-  background-color: #fff;
-  overflow: hidden;
-}
-
-.full-jcalendar__input.is-hover{ border-color:#C19264;}
-.full-jcalendar__input .input-text{
-}
-.full-jcalendar__input .input-icon{
+.full-jcalendar .input-icon{
   position: absolute;
-  z-index: 111;
-  right:5px;
-  top:6px;
+  width: 28px;
+  height: 100%;
+  right: 0;
+  top: 5px;
+  text-align: center;
   color: #e8a400;
-  line-height: 22px;
+  transition: all .3s;
 }
-.full-jcalendar__input .input-icon .iconfont{
+.full-jcalendar .input-icon .iconfont{
   font-size: 18px;
 }
-.full-jcalendar__input .input-icon .iconfont.is-clear{
+.full-jcalendar .input-icon .iconfont.is-clear{
   color:#999;
   font-weight: bolder;
 }
-.full-jcalendar__input .icon-tip{
+.full-jcalendar .input-icon__tip{
   position: absolute;
-  z-index: 1111;
   right:28px;
-  top:5px;
+  top:10px;
+  width:16px;
+  cursor: default;
+  text-align: center;
 }
-.full-jcalendar__input .icon-tip i{
-  display: inline-block;
+.full-jcalendar .input-icon__tip i{
+  display: block;
   margin:0;
   padding:0;
   width:16px;
@@ -96,12 +84,65 @@ a{ cursor: pointer;}
   color:#fff;
   line-height: 16px;
   text-align: center;
+  overflow: hidden;
+}
+
+.full-jcalendar .input__inner{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: none;
+  border-radius: 5px;
+  border: 1px solid #bfcbd9;
+  box-sizing: border-box;
+  color: #1f2d3d;
+  display: inline-block;
+  font-size: inherit;
+  height: 36px;
+  line-height: 1;
+  outline: none;
+  padding: 3px 10px;
+  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+  min-width:193px;
+  width: 100%;
+}
+.full-jcalendar .input__inner:focus{
+  outline: none;
+  border-color:#20a0ff;
+}
+.full-jcalendar .input__inner:hover{
+  border-color:#8391a5;
+}
+.input-icon+.input__inner{
+  padding-right:28px;
+}
+.input-icon__tip+.input__inner{
+  padding-right:35px;
+}
+.full-jcalendar input.input__inner::placeholder, .full-jcalendar input.input__inner:-moz-placeholder{
+  color:#97A8BE;
+}
+.full-jcalendar.is-disabled{
+  background-color: #eef1f6;
+  border-color: #d1dbe5;
+  color: #bbb;
+  cursor: not-allowed;
+}
+.full-jcalendar.is-disabled i{
+   color: #bbb;
+ }
+.full-jcalendar.is-disabled *{
+  cursor: not-allowed;
+}
+.full-jcalendar.is-disabled .input-inner{
+  background-color: #eef1f6;
 }
 .full-jcalendar__main{
   cursor: pointer;
   position: absolute;
-  z-index: 1675;
-  left:5px;
+  z-index: 1670;
+  left:2px;
   top:38px;
   width:296px;
   background-color: #ffffff;
@@ -308,6 +349,9 @@ a{ cursor: pointer;}
 }
 .full-jcalendar__body .select:hover{
   background-color: #009bfe;
+}
+.full-jcalendar__body .day-cell.not-optional{
+  background-color: #ECF1F4;
 }
 .full-jcalendar__month,.full-jcalendar__year{
   position: absolute;

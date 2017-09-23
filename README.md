@@ -79,6 +79,25 @@ export default{
 | laterCurrentYears   | the years number after now  based on the current year | Number     | －－            | 2            |
 | format           | format Date | String       | －－            | YYYY-MM-DD   |
 | showLunarControl    | whether to show the lunar control by default  | Boolean   | true/false      | true         |
+| editable    | whether to input your date int the component  | Boolean   | true/false      | false         |
+| placeholder    | placeholder for component             | String        | --                  | --         |
+| clearable    | whether to show the clear button  | Boolean   | true/false      | true         |
+| disabled    | whether to disable this component | Boolean   | true/false      | false         |
+| rangeSeparator    | date separator                        | String        | --        | '-'         |
+| picker-options    | refer to the following                        | object        | --        | {}         |
+
+**picker-options**
+| Properties      | Description                      | Type      |  Optional value       | Default value         |
+| :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
+| disabledDate    | Set disable date.Parameter is current date.you should return Boolean .Like examples!  | Function        | --        | --         |
+
+
+**event**
+| event name      | Description                      | return      | 
+| :---------------- | :--------------------------------------- | :------      | 
+| change    | When the input value changes return the value  | value        | 
+
+
 
 **GitHub**
 https://github.com/tuhe32/vue-jLunar-datePicker
