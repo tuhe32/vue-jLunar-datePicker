@@ -254,9 +254,9 @@
         editable:true,
         clearable:true,
         pickerOptions: {
-//          disabledDate (time) {
-//            return time.getTime() < Date.now() - 8.64e7;
-//          }
+          disabledDate (time) {
+            return time.getTime() < Date.now() - 8.64e7;
+          }
         },
       }
     },
