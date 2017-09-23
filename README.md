@@ -109,12 +109,14 @@ export default{
 | picker-options    | refer to the following                        | object        | --        | {}         |
 
 **picker-options**
+
 | Properties      | Description                      | Type      |  Optional value       | Default value         |
 | :---------------- | :--------------------------------------- | :------      | :------------ | :------------ |
 | disabledDate    | Set disable date.Parameter is current date.you should return Boolean .Like examples!  | Function        | --        | --         |
 
 
 **event**
+
 | event name      | Description                      | return      | 
 | :---------------- | :--------------------------------------- | :------      | 
 | change    | When the input value changes return the value  | value        | 
