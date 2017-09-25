@@ -1,5 +1,5 @@
 <template>
-  <div class="full-jcalendar" :class="{'is-disabled':disabled}" :style="{width:handleWidth+'px'}">
+  <div class="full-jcalendar" :style="{width:handleWidth+'px'}">
 
     <p class="input-icon__tip" v-show="isLunar && showLunarIcon">
       <i v-if="isLeap">闰</i>
@@ -11,7 +11,7 @@
       <i class="iconfont icon-guanbi is-clear" v-show="clearable && clearVisible" @click="onClearInput"></i>
     </p>
 
-    <input type="text" :value="inputText" class="input__inner" :placeholder="placeholder" @click="onInputFocus" :readonly="!editable || type.toUpperCase() ==='DATERANGE' || (isLunar && showLunarClass.toUpperCase()!='NUMBER')" :disabled="disabled" @input="inputText = $event.target.value" @change="handleInputChange" />
+    <input type="text" :value="inputText" :class="['input__inner',{'is-disabled':disabled}]" :placeholder="placeholder" @click="onInputFocus" :readonly="!editable || type.toUpperCase() ==='DATERANGE' || (isLunar && showLunarClass.toUpperCase()!='NUMBER')" :disabled="disabled" @input="inputText = $event.target.value" @change="handleInputChange" />
 
     <!--日期控件弹窗主体-->
     <div class="full-jcalendar__main" :class="{'is-daterange':type.toUpperCase() === 'DATERANGE'}" v-show="calendarVisible">
@@ -269,7 +269,7 @@
       },
       pickerOptions:{
         type:Object,
-        default:{}
+        default:null
       },
     },
     computed: {
@@ -493,7 +493,7 @@
         this.clearVisible = false;
       },
       isNotOptional(day){
-        if ('disabledDate' in this.pickerOptions) {
+        if (this.pickerOptions != null && this.pickerOptions != undefined && 'disabledDate' in this.pickerOptions) {
           return this.pickerOptions.disabledDate(new Date(day.date));
         }
         return false;

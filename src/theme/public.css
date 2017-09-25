@@ -123,21 +123,19 @@ a{ cursor: pointer;}
 .full-jcalendar input.input__inner::placeholder, .full-jcalendar input.input__inner:-moz-placeholder{
   color:#97A8BE;
 }
-.full-jcalendar.is-disabled{
+.full-jcalendar input.is-disabled{
   background-color: #eef1f6;
   border-color: #d1dbe5;
   color: #bbb;
   cursor: not-allowed;
 }
-.full-jcalendar.is-disabled i{
+.full-jcalendar .is-disabled i{
    color: #bbb;
  }
-.full-jcalendar.is-disabled *{
+.full-jcalendar .is-disabled *{
   cursor: not-allowed;
 }
-.full-jcalendar.is-disabled .input-inner{
-  background-color: #eef1f6;
-}
+
 .full-jcalendar__main{
   cursor: pointer;
   position: absolute;

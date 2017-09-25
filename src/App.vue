@@ -241,7 +241,7 @@
     data(){
       return {
         value1:new Date(),
-        type:'DATERANGE',
+        type:'DATE',
         showLunarClass:'NUMBER',
         showBackYears:2,
         showLunarIcon:true,
@@ -254,9 +254,9 @@
         editable:true,
         clearable:true,
         pickerOptions: {
-          disabledDate (time) {
-            return time.getTime() < Date.now() - 8.64e7;
-          }
+//          disabledDate (time) {
+//            return time.getTime() < Date.now() - 8.64e7;
+//          }
         },
       }
     },
