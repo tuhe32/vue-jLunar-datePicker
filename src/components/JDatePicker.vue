@@ -382,6 +382,7 @@
           this.monthDay  = valueDay;
           this.selectDay = [valueDay];
           this.inputText = result;
+          this.loadCalendar();
           return;
         }
         if (this.type.toUpperCase() == 'DATERANGE') {
@@ -445,6 +446,7 @@
             this.selectDay  = [valueDay, valueDay2];
             this.chooseDay  = [valueDay, valueDay2];
             this.inputText  = result;
+            this.loadCalendar();
           }
         }
       },
