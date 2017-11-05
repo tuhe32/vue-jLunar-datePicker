@@ -7,6 +7,9 @@
 ![demo](./static/DEMO.png)
 
 
+# Online demo  
+* [enjoy the demo](https://tuhe32.github.io/vue-jLunar-datePicker/)
+
 ### Getting Start
 
 ---
