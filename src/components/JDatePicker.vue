@@ -718,7 +718,7 @@
               weekIndex:iWeek,
               week: iDay,
               date: start.clone().format('YYYY-MM-DD'),
-              lDate: JDatePickerScript.calendar.getLunar(start.toISOString()),
+              lDate: JDatePickerScript.calendar.getLunar(start.clone().format('YYYY-MM-DD')),
             });
             start.add(1, 'd')
           }

@@ -19,7 +19,7 @@ const calendar = {
     0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,//1960-1969
     0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,//1970-1979
     0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,//1980-1989
-    0x04af5,0x00970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,//1990-1999
+    0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x055c0,0x0ab60,0x096d5,0x092e0,//1990-1999
     0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,//2000-2009
     0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,//2010-2019
     0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,//2020-2029
@@ -167,6 +167,15 @@ const calendar = {
    * @return Cn string
    */
   nStr3:["\u6b63","\u4e8c","\u4e09","\u56db","\u4e94","\u516d","\u4e03","\u516b","\u4e5d","\u5341","\u51ac","\u814a"],
+
+  /**
+   * 农历节日
+   */
+  lunarFestival:{"1-1":"春节","1-15":"上元节","2-2":"龙抬头","5-5":"端午","7-7":"七夕","7-15":"中元节","8-15":"中秋","9-9":"重阳","10-15":"下元节","12-8":"腊八","12-23":"小年"},
+  /**
+   * 公历节日
+   */
+  solarFestival:{"1-1":"元旦","2-14":"情人节","3-8":"妇女节","3-12":"植树节","4-1":"愚人节","5-1":"劳动节","5-4":"青年节","6-1":"儿童节","7-1":"建党节","8-1":"建军节","9-10":"教师节","10-1":"国庆节","11-1":"万圣节","12-24":"平安夜","12-25":"圣诞节"},
 
   /**
    * 返回农历y年一整年的总天数
@@ -383,7 +392,19 @@ const calendar = {
   getAnimal: function(y) {
     return calendar.Animals[(y - 4) % 12]
   },
-
+  /**
+   * 判断 当天为 此年的第几天
+   * @param date
+   * @returns {number}
+   */
+  getCyclical:function(date){
+    var nowDate = new Date(date);
+    var initTime = new Date(date);
+    initTime.setMonth(0); // 本年初始月份
+    initTime.setDate(1); // 本年初始时间
+    var differenceVal = nowDate - initTime ; // 今天的时间减去本年开始时间，获得相差的时间
+    return Math.ceil(differenceVal/(24*60*60*1000));
+  },
   /**
    * 传入阳历年月日获得详细的公历、农历object信息 <=>JSON
    * @param y  solar year
@@ -464,12 +485,13 @@ const calendar = {
     }
     if(offset<0)
     {
-      offset += temp; --i;
+      offset += temp;
+      --i;
     }
     //农历月
     var month      = i;
     //农历日
-    var day        = offset + 1;
+    var day        = offset +1;
     //天干地支处理
     var sm         = m-1;
     var gzY        = calendar.toGanZhiYear(year);
@@ -499,84 +521,24 @@ const calendar = {
     //日柱 当月一日与 1900/1/1 相差天数
     var dayCyclical = Date.UTC(y,sm,1,0,0,0,0)/86400000+25567+10;
     var gzD         = calendar.toGanZhi(dayCyclical+d-1);
+    //(年-1900) * 5 + (年-1900+3) / 4 + 9 + 当年年初起累积日数
+    // var dayCyclical = (y-1900)*5 + (y-1900+3)/4 + 9 +(this.getCyclical(y+'-'+m+'-'+d))
+    // var gzD         = calendar.toGanZhi(dayCyclical-1);
     //该日期所属的星座
     var astro       = calendar.toAstro(m,d);
     //该日期所有的节日
     var festival    = [];
     //农历传统节日
-    if(month == 1 && day == 1){
-      festival.push('春节');
-    }
-    else if(month==1&&day==15){
-      festival.push('上元节');
-    }
-    else if(month==2&&day==2){
-      festival.push('龙抬头');
-    }
-    else if(month==5&&day==5){
-      festival.push('端午');
-    }
-    else if(month==7){
-      if(day==7) festival.push('七夕');
-      if(day==15) festival.push('中元节');
-    }
-    else if(month==8&&day==15){
-      festival.push('中秋');
-    }
-    else if(month==9&&day==9){
-      festival.push('重阳');
-    }
-    else if(month==10&&day==15){
-      festival.push('下元节');
-    }
-    else if(month==12){
-      if(day==8) festival.push('腊八');
-      if(day==23) festival.push('小年');
-      if(isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29) festival.push('除夕');
-    }
+    var lf = calendar.lunarFestival[month+'-'+day];
+    if(lf != undefined && lf != null && lf != '') festival.push(lf);
+    if(month==12 && isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29) festival.push('除夕');
+
     //公历节日
-    if(m==1 && d==1){
-      festival.splice(0,0,'元旦');
-    }
-    else if(m==2 && d==14){
-      festival.push('情人节');
-    }
-    else if(m==3){
-      if(d==8) festival.push('妇女节');
-      if(d==12) festival.push('植树节');
-    }
-    else if(m==4 && d==1){
-      festival.push('愚人节');
-    }
-    else if(m==5){
-      if(d==1) festival.push('劳动节');
-      if(d==4) festival.push('青年节');
-      if(d==calendar.getSunday(y,m,2)) festival.push('母亲节');
-    }
-    else if(m==6){
-      if(d==1) festival.push('儿童节');
-      if(d==4) festival.push('青年节');
-      if(d==calendar.getSunday(y,m,3)) festival.push('父亲节');
-    }
-    else if(m==7 && d==1){
-      festival.push('建党节');
-    }
-    else if(m==8 && d==1){
-      festival.push('建军节');
-    }
-    else if(m==9 && d==10){
-      festival.push('教师节');
-    }
-    else if(m==10 && d==1){
-      festival.push('国庆节');
-    }
-    else if(m==11 && d==1){
-      festival.push('万圣节');
-    }
-    else if(m==12){
-      if(d==24) festival.push('平安夜');
-      if(d==25) festival.push('圣诞节');
-    }
+    var sf = calendar.solarFestival[m+'-'+d];
+    if(sf != undefined && sf != null && sf != '') festival.push(sf);
+    if(m==5 && d==calendar.getSunday(y,m,2)) festival.push('母亲节');
+    if(m==6 && d==calendar.getSunday(y,m,3)) festival.push('父亲节');
+
     return {'lYear':year,'lMonth':month,'lDay':day,'isFestival':festival.length>0,'festival':festival,'Animal':calendar.getAnimal(year),'IMonthCn':(isLeap?"\u95f0":'')+calendar.toChinaMonth(month),'IDayCn':calendar.toChinaDay(day),'cYear':y,'cMonth':m,'cDay':d,'gzYear':gzY,'gzMonth':gzM,'gzDay':gzD,'isToday':isToday,'isLeap':isLeap,'nWeek':nWeek,'ncWeek':"\u661f\u671f"+cWeek,'isTerm':isTerm,'Term':Term,'astro':astro};
   },
 
