@@ -531,7 +531,7 @@ const calendar = {
     //农历传统节日
     var lf = calendar.lunarFestival[month+'-'+day];
     if(lf != undefined && lf != null && lf != '') festival.push(lf);
-    if(month==12 && isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29) festival.push('除夕');
+    if(month==12 && (isLeap?day == calendar.leapDays(year):calendar.monthDays(month-1)==29?day == 30:day == 29)) festival.push('除夕');
 
     //公历节日
     var sf = calendar.solarFestival[m+'-'+d];
